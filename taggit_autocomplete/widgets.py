@@ -10,11 +10,16 @@ class TagAutocomplete(forms.TextInput):
 	input_type = 'text'
 	
 	def render(self, name, value, attrs=None):
-		list_view = reverse('taggit_autocomplete-list')
+		list_view = '/dynamic/autocomplete/1/taggable/'
 		if value is not None and not isinstance(value, basestring):
 			value = edit_string_for_tags([o.tag for o in value.select_related("tag")])
+		attrs['class'] = 'vTextField'
 		html = super(TagAutocomplete, self).render(name, value, attrs)
-		js = u'<script type="text/javascript">jQuery().ready(function() { jQuery("#%s").autocomplete("%s", { multiple: true }); });</script>' % (attrs['id'], list_view)
+		js = u'''<script type="text/javascript">
+			$(document).ready(function() { 
+				$("#%s").autocomplete({ serviceUrl: "%s", delimiter: /(,|;)\s*/ });
+			});
+			</script>''' % (attrs['id'], list_view)
 		return mark_safe("\n".join([html, js]))
 	
 	class Media:
@@ -23,5 +28,6 @@ class TagAutocomplete(forms.TextInput):
 		    'all': ('%s/jquery.autocomplete.css' % js_base_url,)
 		}
 		js = (
-			'%s/jquery.autocomplete.js' % js_base_url,
+			'/media/js/jquery.js',
+			'/media/js/jquery.autocomplete.js'
 			)
