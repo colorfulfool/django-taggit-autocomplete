@@ -23,11 +23,10 @@ class TagAutocomplete(forms.TextInput):
 		return mark_safe("\n".join([html, js]))
 	
 	class Media:
-		js_base_url = getattr(settings, 'TAGGIT_AUTOCOMPLETE_JS_BASE_URL','%s/jquery-autocomplete' % settings.MEDIA_URL)
 		css = {
-		    'all': ('%s/jquery.autocomplete.css' % js_base_url,)
+		    'all': (settings.STATIC_URL + 'css/jquery.autocomplete.css',)
 		}
 		js = (
-			'/media/js/jquery.js',
-			'/media/js/jquery.autocomplete.js'
-			)
+			'http://code.jquery.com/jquery-latest.js',
+			settings.STATIC_URL +'js/jquery.autocomplete.js'
+		)
